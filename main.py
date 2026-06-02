@@ -14,7 +14,6 @@ fake = Faker()
 # Casino codes found within the CSV dataset
 properties = {
     "BMC": "Blue Meridian Casino",
-    "IGC": "Ironwood Grand Casino",
     "RLC": "Red Lantern Casino",
     "GPC": "Glass Palm Casino"
 }
