@@ -171,7 +171,7 @@ def generate_base_boss_offer(activeclubid):
     source_person_key = hashlib.md5(("BOSS" + str(activeclubid)).encode()).hexdigest()
 
     try:
-        active_club_id_val = float(activeclubid)
+        active_club_id_val = str(activeclubid)
     except (ValueError, TypeError):
         active_club_id_val = activeclubid
 
