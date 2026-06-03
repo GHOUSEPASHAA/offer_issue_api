@@ -31,7 +31,7 @@ basic_offers_blueprint = [
     },
     {
         "OFFER_CATEGORY": "Freeplay",
-        "OFFER_CHANNEL": "express-offers",
+        "OFFER_CHANNEL": "Instant Coupons",
         "OFFER_REWARD_TYPE": "Electronic Promo Credit to Machine",
         "OFFER_REWARD_NAME": "M!0AD98747",
         "OFFER_REWARD_AMOUNT": 5.0,
@@ -41,7 +41,7 @@ basic_offers_blueprint = [
     },
     {
         "OFFER_CATEGORY": "Food Credit",
-        "OFFER_CHANNEL": "express-offers",
+        "OFFER_CHANNEL": "Instant Coupons",
         "OFFER_REWARD_TYPE": "Food & Beverage",
         "OFFER_REWARD_NAME": "M!0AI79539",
         "OFFER_REWARD_AMOUNT": 15.0,
@@ -73,7 +73,7 @@ elite_offers_blueprint = [
     },
     {
         "OFFER_CATEGORY": "Freeplay",
-        "OFFER_CHANNEL": "express-offers",
+        "OFFER_CHANNEL": "Instant Coupons",
         "OFFER_REWARD_TYPE": "Electronic Promo Credit to Machine",
         "OFFER_REWARD_NAME": "M!0AK77172",
         "OFFER_REWARD_AMOUNT": 50.0,
@@ -92,7 +92,7 @@ elite_offers_blueprint = [
     },
     {
         "OFFER_CATEGORY": "Food Credit",
-        "OFFER_CHANNEL": "express-offers",
+        "OFFER_CHANNEL": "Instant Coupons",
         "OFFER_REWARD_TYPE": "Food & Beverage",
         "OFFER_REWARD_NAME": "M!0AL82147",
         "OFFER_REWARD_AMOUNT": 20.0,
