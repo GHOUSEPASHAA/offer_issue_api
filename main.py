@@ -124,50 +124,86 @@ def generate_person_id(activeclubid):
 
 
 def generate_base_boss_offer(activeclubid):
-    person_id = generate_person_id(activeclubid)
-    property_code = random.choice(list(properties.keys()))
-    property_name = properties[property_code]
 
-    # Generate the base target date 
-    order_timestamp = (
-        datetime.now()
-        - timedelta(
-            days=random.randint(1, 30),
-            hours=random.randint(1, 12)
-        )
+    # Stable seed based on ACTIVE_CLUB_ID
+    seed = int(
+        hashlib.md5(str(activeclubid).encode()).hexdigest()[:8],
+        16
     )
 
-    # Establish demographic tiers matching data behavior
-    club_level = random.choices(["Basic", "Elite"], weights=[0.65, 0.35], k=1)[0]
+    fake_stable = Faker()
+    fake_stable.seed_instance(seed)
+
+    # Stable columns
+    person_id = fake_stable.random_int(10000, 99999)
+
+    property_code = fake_stable.random_element(
+        list(properties.keys())
+    )
+    property_name = properties[property_code]
+
+    order_timestamp = datetime(
+        2026,
+        1,
+        1
+    ) + timedelta(
+        days=seed % 365,
+        hours=(seed // 365) % 24,
+        minutes=(seed // 8760) % 60
+    )
+
+    club_level = fake_stable.random_element(
+        ["Basic", "Elite"]
+    )
 
     if club_level == "Basic":
-        tier_points = float(random.choices([0, random.randint(1, 1500)], weights=[0.60, 0.40], k=1)[0])
-        base_points_bal = float(random.randint(0, 100))
+        tier_points = float(
+            fake_stable.random_int(0, 1500)
+        )
+        base_points_bal = float(
+            fake_stable.random_int(0, 100)
+        )
         blueprint = random.choice(basic_offers_blueprint)
+
     else:
-        tier_points = float(random.choice([22803, 36365, 44207, random.randint(20000, 48000)]))
-        base_points_bal = float(random.randint(15, 250))
+        tier_points = float(
+            fake_stable.random_int(20000, 48000)
+        )
+        base_points_bal = float(
+            fake_stable.random_int(15, 250)
+        )
         blueprint = random.choice(elite_offers_blueprint)
 
     # --- NEW ADDITION: CALCULATE DYNAMIC DATES BASED ON GAMING_DATE ---
     start_date_str = order_timestamp.strftime("%m/%d")
-    
-    if blueprint["TEMPLATE_TYPE"] == "SINGLE_DAY":
-        # Matches: $100 Free Play (11/18-11/18) where dates equal the gaming date
-        dynamic_text = f"{blueprint['TEXT_PREFIX']} ({start_date_str}-{start_date_str})"
-    elif blueprint["TEMPLATE_TYPE"] == "RANGE":
-        # Matches: $20 Food Credit (12/02-01/05) where it dynamically projects outward
-        end_date = order_timestamp + timedelta(days=blueprint["DAYS_EXTENSION"])
-        end_date_str = end_date.strftime("%m/%d")
-        dynamic_text = f"{blueprint['TEXT_PREFIX']}  ({start_date_str}-{end_date_str})"
-    else:
-        # Handles standalone structural text templates (like cruise sweepstakes draws)
-        dynamic_text = blueprint["TEXT_PREFIX"]
-    # ------------------------------------------------------------------
 
-    event_id = hashlib.md5(str(uuid.uuid4()).encode()).hexdigest()
-    event_group_id = hashlib.md5(str(activeclubid).encode()).hexdigest()
-    source_person_key = hashlib.md5(("BOSS" + str(activeclubid)).encode()).hexdigest()
+    if blueprint["TEMPLATE_TYPE"] == "SINGLE_DAY":
+        dynamic_text = f"{blueprint['TEXT_PREFIX']} ({start_date_str}-{start_date_str})"
+
+    elif blueprint["TEMPLATE_TYPE"] == "RANGE":
+        end_date = order_timestamp + timedelta(
+            days=blueprint["DAYS_EXTENSION"]
+        )
+        end_date_str = end_date.strftime("%m/%d")
+        dynamic_text = (
+            f"{blueprint['TEXT_PREFIX']} "
+            f"({start_date_str}-{end_date_str})"
+        )
+
+    else:
+        dynamic_text = blueprint["TEXT_PREFIX"]
+
+    event_id = hashlib.md5(
+        str(uuid.uuid4()).encode()
+    ).hexdigest()
+
+    event_group_id = hashlib.md5(
+        str(activeclubid).encode()
+    ).hexdigest()
+
+    source_person_key = hashlib.md5(
+        ("offer" + str(activeclubid)).encode()
+    ).hexdigest()
 
     try:
         active_club_id_val = str(activeclubid)
@@ -175,7 +211,6 @@ def generate_base_boss_offer(activeclubid):
         active_club_id_val = activeclubid
 
     return {
-        "EVENT_TIMESTAMP": order_timestamp.isoformat() + "Z",
         "EVENT_TIMESTAMP": order_timestamp.isoformat() + "Z",
         "EVENT_TIMESTAMP_PROPERTY": order_timestamp.isoformat() + "Z",
         "EVENT_TIMESTAMP_PROPERTY_TIMEZONE": "America/Chicago",
@@ -188,6 +223,8 @@ def generate_base_boss_offer(activeclubid):
         "CLUB_LEVEL": club_level,
         "TIER_POINTS": tier_points,
         "BASE_POINTS_BAL": base_points_bal,
+
+        # everything below remains exactly as before
         "SOURCE": "CMP",
         "ENTITY": "OFFER",
         "ACTION": "ISSUE",
