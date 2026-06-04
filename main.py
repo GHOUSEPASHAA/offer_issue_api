@@ -142,14 +142,15 @@ def generate_base_boss_offer(activeclubid):
     )
     property_name = properties[property_code]
 
-    order_timestamp = datetime(
-        2026,
-        1,
-        1
-    ) + timedelta(
-        days=seed % 365,
-        hours=(seed // 365) % 24,
-        minutes=(seed // 8760) % 60
+    start_date = datetime(2025, 7, 1)
+    end_date = datetime(2026, 5, 1)
+
+    max_days = (end_date - start_date).days
+
+    order_timestamp = start_date + timedelta(
+        days=seed % (max_days + 1),
+        hours=(seed // (max_days + 1)) % 24,
+        minutes=(seed // ((max_days + 1) * 24)) % 60
     )
 
     club_level = fake_stable.random_element(
