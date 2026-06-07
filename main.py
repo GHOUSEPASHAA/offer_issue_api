@@ -131,6 +131,8 @@ def generate_base_boss_offer(activeclubid):
         16
     )
 
+    rng = random.Random(seed)
+
     fake_stable = Faker()
     fake_stable.seed_instance(seed)
 
@@ -164,7 +166,7 @@ def generate_base_boss_offer(activeclubid):
         base_points_bal = float(
             fake_stable.random_int(0, 100)
         )
-        blueprint = random.choice(basic_offers_blueprint)
+        blueprint = rng.choice(basic_offers_blueprint)
 
     else:
         tier_points = float(
@@ -173,7 +175,7 @@ def generate_base_boss_offer(activeclubid):
         base_points_bal = float(
             fake_stable.random_int(15, 250)
         )
-        blueprint = random.choice(elite_offers_blueprint)
+        blueprint = rng.choice(elite_offers_blueprint)
 
     # --- NEW ADDITION: CALCULATE DYNAMIC DATES BASED ON GAMING_DATE ---
     start_date_str = order_timestamp.strftime("%m/%d")
@@ -248,24 +250,22 @@ def generate_base_boss_offer(activeclubid):
         "PLAYER_VALUE": None,
         "CMP_CATEGORY": blueprint["OFFER_CATEGORY"],
         "OFFER_REF": None,
-        "OFFER_REWARD_ID": float(random.randint(110000000, 115000000)),
+        "OFFER_REWARD_ID": float(rng.randint(110000000, 115000000)),
         "OFFER_REWARD_AMOUNT": blueprint["OFFER_REWARD_AMOUNT"],
         "OFFER_REWARD_TYPE": blueprint["OFFER_REWARD_TYPE"],
         "OFFER_REWARD_NAME": blueprint["OFFER_REWARD_NAME"],
         "OFFER_IS_ONETIME_PRIZE": False,
-        "OFFER_EARN_TYPE": random.choice(["Points", "WScore"]),
-        "OFFER_EARN_AMOUNT": float(random.choice([0.0, 1.0])),
+        "OFFER_EARN_TYPE": rng.choice(["Points", "WScore"]),
+        "OFFER_EARN_AMOUNT": float(rng.choice([0.0, 1.0])),
         "OFFER_IS_CASHBACK": False,
         "OFFER_PRIZE_NAME": dynamic_text,  # Dynamically constructed text field
         "OFFER_PRIZE_LEVEL": 0.0,
         "OFFER_REWARD_VALUE": 0.0,
         "PROMOTION_EVENT_DETAIL": dynamic_text,  # Dynamically constructed text field
-        "METADATA": None,
-        "TIMESERIES_CMP_OFFER_KEY": hashlib.md5((blueprint["OFFER_REWARD_NAME"] + str(event_id)).encode()).hexdigest(),
+        
         "LAST_SYNCED": datetime.now().isoformat() + "Z",
         "LOAD_TIMESTAMP": None,
-        "DW_TASKID": random.randint(1000, 9999),
-        "DW_USERID": random.randint(10000, 99999),
+        
         "OFFER_CATEGORY": blueprint["OFFER_CATEGORY"],
         "OFFER_CHANNEL": blueprint["OFFER_CHANNEL"]
     }
